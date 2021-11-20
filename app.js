@@ -1,11 +1,9 @@
 const puppeteer = require("puppeteer-core");
 
-const login = require('./login.js');
-const checkin = require('./checkin.js');
+const login = require("./login.js");
+const checkin = require("./checkin.js");
 
-const config = require('./config.json');
-
-
+const config = require("./config.json");
 
 async function run(config) {
   const username = config.username;
@@ -28,7 +26,7 @@ async function run(config) {
   await page.goto(LOGIN_URL);
   await page.screenshot({ path: "login-loaded.png" });
 
-  if(page.url() === LOGIN_URL) await login(page, token, username, password);
+  if (page.url() === LOGIN_URL) await login(page, token, username, password);
 
   await page.goto(CHECKIN_URL);
 
