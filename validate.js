@@ -11,12 +11,17 @@ async function solve(page, token) {
   console.log("-------------solving recaptcha------------");
 
   try {
-    await page.waitForFunction(() => {
-      const iframe = document.querySelector('iframe[src*="api2/anchor"]');
-      if (!iframe) return false;
+    await page.waitForFunction(
+      () => {
+        const iframe = document.querySelector('iframe[src*="api2/anchor"]');
+        if (!iframe) return false;
 
-      return !!iframe.contentWindow.document.querySelector("#recaptcha-anchor");
-    });
+        return !!iframe.contentWindow.document.querySelector(
+          "#recaptcha-anchor"
+        );
+      },
+      { timeout: 15000 }
+    );
 
     let frames = await page.frames();
     const recaptchaFrame = frames.find((frame) =>
@@ -41,32 +46,53 @@ async function solve(page, token) {
       frame.url().includes("api2/bframe")
     );
     const audioButton = await imageFrame.$("#recaptcha-audio-button");
-    await Promise.all([
-      audioButton.click({ delay: rdn(30, 150) }),
-      page.waitForNavigation({ waitUntil: "networkidle2" })
-    ]);
+    audioButton.click({ delay: rdn(30, 150) });
 
-    await page.screenshot({ path: "./screenshots/toSolve-recaptcha.png" });
+    // if ddos blocked then exit.
+    let blocked = false;
+    try {
+      await page.waitForFunction(
+        () => {
+          const iframe = document.querySelector('iframe[src*="api2/bframe"]');
+          if (!iframe) return false;
+
+          return !!iframe.contentWindow.document.querySelector(
+            ".rc-doscaptcha-header-text"
+          );
+        },
+        { timeout: 10000 }
+      );
+
+      blocked = true;
+      await page.screenshot({ path: "./screenshots/recaptcha-blocked.png" });
+    } catch (err) {
+      console.log("not blocked.");
+    } finally {
+      if (blocked) {
+        // recaptcha blcoked. restart after minutes.
+        process.exit(5); 
+        // throw new Error("ddnos blocked.");
+      }
+    }
+    // -----------
 
     while (true) {
-      try { 
+      try {
         // page.on('console', consoleObj => console.log(consoleObj.text()));
 
         await page.waitForFunction(
           () => {
-            console.log("inside recaptcha solver")
             const iframe = document.querySelector('iframe[src*="api2/bframe"]');
             if (!iframe) return false;
-            // console.log(iframe);
-            // console.log("the link??",
-            //   !!iframe.contentWindow.document.querySelector("#audio-source")
-            // )
+
             return !!iframe.contentWindow.document.querySelector(
               ".rc-audiochallenge-tdownload-link"
             );
           },
           { timeout: 10000 }
         );
+        2;
+        await page.screenshot({ path: "./screenshots/recaptcha-toSolve.png" });
 
         // await page.waitForSelector('iframe[src*="api2/bframe"]');
         // await page.waitForSelector('.rc-audiochallenge-tdownload-link');
@@ -74,7 +100,6 @@ async function solve(page, token) {
         console.error(e);
         continue;
       }
-
 
       const audioLink = await page.evaluate(() => {
         const iframe = document.querySelector('iframe[src*="api2/bframe"]');
@@ -141,11 +166,12 @@ async function solve(page, token) {
     }
 
     console.log("-------------recaptcha solved------------");
-
-
   } catch (e) {
-    console.error(e);
-    return null;
+    console.error("failed on solving recaptcha.\n", e);
+
+    await page.screenshot({ path: "./screenshots/recaptcha-error.png" });
+
+    throw e;
   }
 }
 
