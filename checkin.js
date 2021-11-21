@@ -2,7 +2,7 @@ const solve = require("./validate.js");
 
 async function checkin(page, token) {
   await solve(page, token);
-  await page.screenshot({ path: "checkin-recapcha.png" });
+  await page.screenshot({ path: "./screenshots/checkin-recapcha.png" });
 
   await page.click("#kx");
 
@@ -14,7 +14,7 @@ async function checkin(page, token) {
     page.waitForNavigation({ waitUntil: "networkidle2" }),
   ]);
 
-  await page.screenshot({ path: "checkin-checkedin.png" });
+  await page.screenshot({ path: "./screenshots/checkin-checkedin.png" });
 }
 
 module.exports = checkin;

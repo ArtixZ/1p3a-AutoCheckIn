@@ -8,6 +8,8 @@ function rdn(min, max) {
 }
 
 async function solve(page, token) {
+  console.log("-------------solving recaptcha------------");
+
   try {
     await page.waitForFunction(() => {
       const iframe = document.querySelector('iframe[src*="api2/anchor"]');
@@ -39,20 +41,26 @@ async function solve(page, token) {
       frame.url().includes("api2/bframe")
     );
     const audioButton = await imageFrame.$("#recaptcha-audio-button");
-    await audioButton.click({ delay: rdn(30, 150) });
+    await Promise.all([
+      audioButton.click({ delay: rdn(30, 150) }),
+      page.waitForNavigation({ waitUntil: "networkidle2" })
+    ]);
+
+    await page.screenshot({ path: "./screenshots/toSolve-recaptcha.png" });
 
     while (true) {
-      try {
+      try { 
+        // page.on('console', consoleObj => console.log(consoleObj.text()));
+
         await page.waitForFunction(
           () => {
+            console.log("inside recaptcha solver")
             const iframe = document.querySelector('iframe[src*="api2/bframe"]');
             if (!iframe) return false;
-            console.log(iframe);
-            console.log(
-              iframe.contentWindow.document.querySelector(
-                ".rc-audiochallenge-tdownload-link"
-              )
-            );
+            // console.log(iframe);
+            // console.log("the link??",
+            //   !!iframe.contentWindow.document.querySelector("#audio-source")
+            // )
             return !!iframe.contentWindow.document.querySelector(
               ".rc-audiochallenge-tdownload-link"
             );
@@ -66,6 +74,7 @@ async function solve(page, token) {
         console.error(e);
         continue;
       }
+
 
       const audioLink = await page.evaluate(() => {
         const iframe = document.querySelector('iframe[src*="api2/bframe"]');
@@ -130,6 +139,10 @@ async function solve(page, token) {
         continue;
       }
     }
+
+    console.log("-------------recaptcha solved------------");
+
+
   } catch (e) {
     console.error(e);
     return null;

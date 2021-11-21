@@ -2,7 +2,7 @@ const solve = require("./validate.js");
 
 async function login(page, token, username, password) {
   await solve(page, token);
-  await page.screenshot({ path: "login-recapcha.png" });
+  await page.screenshot({ path: "./screenshots/login-recapcha.png" });
 
   await page.focus("#username");
   await page.keyboard.type(username);
@@ -15,7 +15,7 @@ async function login(page, token, username, password) {
     page.waitForNavigation({ waitUntil: "networkidle2" }),
   ]);
 
-  await page.screenshot({ path: "login-loggedin.png" });
+  await page.screenshot({ path: "./screenshots/login-loggedin.png" });
 }
 
 module.exports = login;
