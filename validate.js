@@ -91,7 +91,6 @@ async function solve(page, token) {
           },
           { timeout: 10000 }
         );
-        2;
         await page.screenshot({ path: "./screenshots/recaptcha-toSolve.png" });
 
         // await page.waitForSelector('iframe[src*="api2/bframe"]');
@@ -143,7 +142,7 @@ async function solve(page, token) {
       const verifyButton = await imageFrame.$("#recaptcha-verify-button");
       await verifyButton.click({ delay: rdn(30, 150) });
 
-      try {
+      try { // check if it's successfully solved.
         await page.waitForFunction(
           () => {
             const iframe = document.querySelector('iframe[src*="api2/anchor"]');
@@ -153,7 +152,7 @@ async function solve(page, token) {
               '#recaptcha-anchor[aria-checked="true"]'
             );
           },
-          { timeout: 5000 }
+          { timeout: 10000 }
         );
 
         return page.evaluate(
