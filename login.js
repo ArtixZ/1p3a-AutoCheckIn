@@ -14,8 +14,11 @@ async function login(page, token, username, password, key) {
 
   await Promise.all([
     page.click("input[id=submit]"),
-    page.waitForNavigation({ waitUntil: "networkidle2" }),
-  ]);
+    page.waitForNavigation({ waitUntil: "networkidle2", timeout: 5000 }),
+  ]).catch(err => {
+    console.log('error after clicking on login.');
+    console.log(err);
+  });
 
   await page.screenshot({ path: "./screenshots/login-loggedin.png" });
 

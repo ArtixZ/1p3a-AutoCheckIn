@@ -69,6 +69,9 @@ async function run(config) {
   browser.close();
 }
 
-for (let cfg of config) {
-  run(cfg);
-}
+(async () => {
+  for (let cfg of config) {
+    await run(cfg);
+  }
+})()
+
