@@ -1,10 +1,12 @@
-const solve = require("./validate.js");
 const fs = require('fs').promises;
+const path = require('path');
+const solve = require("./validate.js");
+
 
 
 async function login(page, token, username, password, key) {
   await solve(page, token);
-  await page.screenshot({ path: "./screenshots/login-recapcha.png" });
+  await page.screenshot({ path: path.join(__dirname, "./screenshots/login-recapcha.png") });
 
   await page.focus("#username");
   await page.keyboard.type(username);
@@ -20,11 +22,11 @@ async function login(page, token, username, password, key) {
     console.log(err);
   });
 
-  await page.screenshot({ path: "./screenshots/login-loggedin.png" });
+  await page.screenshot({ path: path.join(__dirname, "./screenshots/login-loggedin.png") });
 
 // write cookies into file
   const cookies = await page.cookies();
-  await fs.writeFile(`./.cookies/${key}`, JSON.stringify(cookies, null, 2));
+  await fs.writeFile(path.join(__dirname, `./.cookies/${key}`), JSON.stringify(cookies, null, 2));
 
 }
 

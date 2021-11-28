@@ -1,5 +1,6 @@
 const axios = require("axios");
 const https = require("https");
+const path = require("path");
 
 function rdn(min, max) {
   min = Math.ceil(min);
@@ -60,11 +61,11 @@ async function solve(page, token) {
             ".rc-doscaptcha-header-text"
           );
         },
-        { timeout: 10000 }
+        { timeout: 20000 }
       );
 
       blocked = true;
-      await page.screenshot({ path: "./screenshots/recaptcha-blocked.png" });
+      await page.screenshot({ path: path.join(__dirname, "./screenshots/recaptcha-blocked.png") });
     } catch (err) {
       console.log("not blocked.");
     } finally {
@@ -72,6 +73,8 @@ async function solve(page, token) {
         // recaptcha blcoked. restart after minutes.
         process.exit(5); 
         // throw new Error("ddnos blocked.");
+      } else {
+        await page.screenshot({ path: path.join(__dirname, "./screenshots/recaptcha-going-to-download-audio.png") });
       }
     }
     // -----------
@@ -89,9 +92,9 @@ async function solve(page, token) {
               ".rc-audiochallenge-tdownload-link"
             );
           },
-          { timeout: 10000 }
+          { timeout: 20000 }
         );
-        await page.screenshot({ path: "./screenshots/recaptcha-toSolve.png" });
+        await page.screenshot({ path: path.join(__dirname, "./screenshots/recaptcha-toSolve.png") });
 
         // await page.waitForSelector('iframe[src*="api2/bframe"]');
         // await page.waitForSelector('.rc-audiochallenge-tdownload-link');
@@ -131,7 +134,7 @@ async function solve(page, token) {
         audioTranscript = response.data.match('"text": "(.*)",')[1].trim();
       } catch (e) {
         const reloadButton = await imageFrame.$("#recaptcha-reload-button");
-        await reloadButton.click({ delay: rdn(30, 150) });
+        await reloadButton1.click({ delay: rdn(30, 150) });
         continue;
       }
 
@@ -152,7 +155,7 @@ async function solve(page, token) {
               '#recaptcha-anchor[aria-checked="true"]'
             );
           },
-          { timeout: 10000 }
+          { timeout: 20000 }
         );
 
         return page.evaluate(
@@ -168,7 +171,7 @@ async function solve(page, token) {
   } catch (e) {
     console.error("failed on solving recaptcha.\n", e);
 
-    await page.screenshot({ path: "./screenshots/recaptcha-error.png" });
+    await page.screenshot({ path: path.join(__dirname, "./screenshots/recaptcha-error.png") });
 
     throw e;
   }

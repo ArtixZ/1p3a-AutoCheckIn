@@ -12,21 +12,23 @@ const CHECKIN_URL = "https://www.1point3acres.com/bbs/dsu_paulsign-sign.html";
 
 // clear out screenshots before run.
 
-try {
-  fs.readdir("./screenshots").then((files) => {
-    for (const file of files) {
-      fs.unlink(path.join("./screenshots", file));
-    }
-  });
-} catch (err) {
-  console.log("can't remove previous screenshots.");
-}
 
 async function run(config) {
+  try {
+    await fs.readdir(path.join(__dirname, "./screenshots")).then(async (files) => {
+      for (const file of files) {
+        await fs.unlink(path.join(__dirname, "./screenshots", file));
+      }
+    });
+  } catch (err) {
+    console.log("can't remove previous screenshots.");
+  }
+
   const username = config.username;
   const password = config.password;
   const token = config.witToken;
   const key = config.key;
+  console.log(`-------------working on user ${username}------------`);
 
   //   const browser = await puppeteer.launch();
   const browser = await puppeteer.launch({
@@ -42,7 +44,7 @@ async function run(config) {
 
   // read cookies and set cookies to page.
   try {
-    const cookiesString = await fs.readFile(`./.cookies/${key}`);
+    const cookiesString = await fs.readFile(path.join(__dirname, `./.cookies/${key}`));
     const cookies = JSON.parse(cookiesString);
     await page.setCookie(...cookies);
   } catch (err) {
@@ -50,7 +52,7 @@ async function run(config) {
   }
 
   await page.goto(LOGIN_URL);
-  await page.screenshot({ path: "./screenshots/login-loaded.png" });
+  await page.screenshot({ path: path.join(__dirname, "./screenshots/login-loaded.png") });
   console.log("-------------now at login page------------");
 
   if (page.url() === LOGIN_URL)
