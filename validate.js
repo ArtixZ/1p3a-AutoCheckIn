@@ -135,7 +135,7 @@ async function solve(page, token) {
         audioTranscript = response.data.match('"text": "(.*)",')[1].trim();
       } catch (e) {
         const reloadButton = await imageFrame.$("#recaptcha-reload-button");
-        await reloadButton1.click({ delay: rdn(30, 150) });
+        await reloadButton.click({ delay: rdn(30, 150) });
         continue;
       }
 
