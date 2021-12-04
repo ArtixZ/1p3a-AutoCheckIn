@@ -1,3 +1,4 @@
+
 const puppeteer = require("puppeteer-core");
 const fs = require("fs").promises;
 const path = require("path");
@@ -22,6 +23,7 @@ async function run(config) {
     });
   } catch (err) {
     console.log("can't remove previous screenshots.");
+    console.log(err);
   }
 
   const username = config.username;
@@ -41,6 +43,7 @@ async function run(config) {
     ],
   });
   const page = await browser.newPage();
+  await page.setDefaultNavigationTimeout(0);
 
   // read cookies and set cookies to page.
   try {
@@ -51,24 +54,30 @@ async function run(config) {
     console.log("can't set cookie.", err);
   }
 
-  await page.goto(LOGIN_URL);
-  await page.screenshot({ path: path.join(__dirname, "./screenshots/login-loaded.png") });
-  console.log("-------------now at login page------------");
+  try {
+    await page.goto(LOGIN_URL);
+    await page.screenshot({ path: path.join(__dirname, "./screenshots/login-loaded.png") });
+    console.log("-------------now at login page------------");
 
-  if (page.url() === LOGIN_URL)
-    await login(page, token, username, password, key);
+    if (page.url() === LOGIN_URL)
+      await login(page, token, username, password, key);
 
-  console.log("-------------logged in------------");
+    console.log("-------------logged in------------");
 
-  await page.goto(CHECKIN_URL);
+    await page.goto(CHECKIN_URL);
 
-  console.log("-------------now at checkin page------------");
+    console.log("-------------now at checkin page------------");
 
-  await checkin(page, token);
+    await checkin(page, token);
 
-  console.log("-------------checked in------------");
+    console.log("-------------checked in------------");
 
-  browser.close();
+    await browser.close();
+    
+  } catch(err) {
+    console.log(err, err.stack);
+  }
+  
 }
 
 (async () => {

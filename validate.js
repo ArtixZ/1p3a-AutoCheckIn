@@ -21,7 +21,7 @@ async function solve(page, token) {
           "#recaptcha-anchor"
         );
       },
-      { timeout: 15000 }
+      { timeout: 30000 }
     );
 
     let frames = await page.frames();
@@ -61,7 +61,7 @@ async function solve(page, token) {
             ".rc-doscaptcha-header-text"
           );
         },
-        { timeout: 20000 }
+        { timeout: 40000 }
       );
 
       blocked = true;
@@ -71,6 +71,7 @@ async function solve(page, token) {
     } finally {
       if (blocked) {
         // recaptcha blcoked. restart after minutes.
+        console.log("blocked.");
         process.exit(5); 
         // throw new Error("ddnos blocked.");
       } else {
@@ -92,7 +93,7 @@ async function solve(page, token) {
               ".rc-audiochallenge-tdownload-link"
             );
           },
-          { timeout: 20000 }
+          { timeout: 40000 }
         );
         await page.screenshot({ path: path.join(__dirname, "./screenshots/recaptcha-toSolve.png") });
 
@@ -155,7 +156,7 @@ async function solve(page, token) {
               '#recaptcha-anchor[aria-checked="true"]'
             );
           },
-          { timeout: 20000 }
+          { timeout: 40000 }
         );
 
         return page.evaluate(
@@ -163,6 +164,7 @@ async function solve(page, token) {
         );
       } catch (e) {
         console.error(e);
+        await page.screenshot({ path: path.join(__dirname, "./screenshots/recaptcha-solved-error.png") });
         continue;
       }
     }
