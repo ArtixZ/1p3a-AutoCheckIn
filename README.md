@@ -1,4 +1,4 @@
-# 1p3aAutoCheckIn
+# [1point3acres.com/bbs](https://www.1point3acres.com/bbs/) auto check in
 
 ## Feature
  - Auto resolve recaptcha
