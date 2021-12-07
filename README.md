@@ -7,5 +7,4 @@
 ##Todo:
 
     - Store recognized voice locally
-    - support multi user
     - store cookie to reuse
