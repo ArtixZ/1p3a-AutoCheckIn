@@ -13,4 +13,4 @@
 
 ## Todo:
 
-    - Store recognized voice and train data
+ - Store recognized voice and train data
