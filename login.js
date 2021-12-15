@@ -16,7 +16,7 @@ async function login(page, token, username, password) {
 
   await Promise.all([
     page.click("input[id=submit]"),
-    page.waitForNavigation({ waitUntil: "networkidle2", timeout: 5000 }),
+    page.waitForNavigation({ waitUntil: "networkidle2", timeout: 40000 }),
   ]).catch(err => {
     console.log('error after clicking on login.');
     console.log(err);
