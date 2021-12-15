@@ -7,7 +7,7 @@
  
 ## Get started
  - Add `username` and `password` into **config.json** file.
- - Create a free token from wit.ai (which can be found under Settings in the Wit.ai UI), and add `token` into **config.json** file.
+ - Create a free token from [wit.ai](https://wit.ai/) (which can be found under Settings in the Wit.ai UI), and add `token` into **config.json** file.
  - Run `node run.js`
 
 
