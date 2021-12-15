@@ -4,6 +4,7 @@
  - Auto resolve recaptcha
  - Auto restart on failure
  - Easy to schedule as Cron job
+ - Support multi-account checkin one after another.
  
 ## Get started
  - Clone the repo. `cd` into folder and run `npm install`.
