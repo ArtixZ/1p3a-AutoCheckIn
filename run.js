@@ -8,7 +8,9 @@ async function run() {
   // console.log( process.env.PATH );
   const execPath = await cmd('which node');
   console.log('node path: ', execPath);
-  const exec = spawn(execPath, [path.join(__dirname, 'app.js')], {
+  if(execPath.stderr) throw new Error('Node JS is not installed.');
+
+  const exec = spawn(execPath.stdout, [path.join(__dirname, 'app.js')], {
     env: {
       NODE_ENV: 'production',
       PATH: process.env.PATH
