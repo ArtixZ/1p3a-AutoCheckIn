@@ -4,7 +4,7 @@ const solve = require("./validate.js");
 
 
 
-async function login(page, token, username, password, key) {
+async function login(page, token, username, password) {
   await solve(page, token);
   await page.screenshot({ path: path.join(__dirname, "./screenshots/login-recapcha.png") });
 
@@ -26,7 +26,7 @@ async function login(page, token, username, password, key) {
 
 // write cookies into file
   const cookies = await page.cookies();
-  await fs.writeFile(path.join(__dirname, `./.cookies/${key}`), JSON.stringify(cookies, null, 2));
+  await fs.writeFile(path.join(__dirname, `./.cookies/${username}`), JSON.stringify(cookies, null, 2));
 
 }
 

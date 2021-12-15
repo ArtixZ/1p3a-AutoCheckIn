@@ -29,7 +29,6 @@ async function run(config) {
   const username = config.username;
   const password = config.password;
   const token = config.witToken;
-  const key = config.key;
   console.log(`-------------working on user ${username}------------`);
 
   //   const browser = await puppeteer.launch();
@@ -47,7 +46,7 @@ async function run(config) {
 
   // read cookies and set cookies to page.
   try {
-    const cookiesString = await fs.readFile(path.join(__dirname, `./.cookies/${key}`));
+    const cookiesString = await fs.readFile(path.join(__dirname, `./.cookies/${username}`));
     const cookies = JSON.parse(cookiesString);
     await page.setCookie(...cookies);
   } catch (err) {
@@ -60,7 +59,7 @@ async function run(config) {
     console.log("-------------now at login page------------");
 
     if (page.url() === LOGIN_URL)
-      await login(page, token, username, password, key);
+      await login(page, token, username, password);
 
     console.log("-------------logged in------------");
 
