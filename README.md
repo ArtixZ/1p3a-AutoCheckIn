@@ -1,7 +1,7 @@
 # [1point3acres.com/bbs](https://www.1point3acres.com/bbs/) auto check in
 
 ## Features
- - Auto resolve recaptcha using wit voice regconition.
+ - Auto resolve recaptcha using voice regconition API.
  - Auto restart on failure
  - Easy to schedule as Cron job
  - Support multi-account checkin one after another.
