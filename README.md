@@ -17,5 +17,5 @@
  - Node JS is installed.
 
 ## Todo:
-
- - Store recognized voice and train data
+ - Auto solve questions every day to double the points (API is ready: https://us-central1-p3a-dayquestion.cloudfunctions.net/g).
+ - Store recognized voice and train data.
