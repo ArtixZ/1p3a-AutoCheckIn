@@ -61,6 +61,7 @@ async function question(page, token) {
         );
 
         await page.click(".pnc");
+        await page.waitFor(3000);
     } catch (err) {
         console.trace(err);
         throw err;
