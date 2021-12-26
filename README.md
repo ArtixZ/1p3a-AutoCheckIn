@@ -1,7 +1,7 @@
 # [1point3acres.com/bbs](https://www.1point3acres.com/bbs/) auto check in
 
 ## Features
- - Auto resolve recaptcha
+ - Auto resolve recaptcha using voice regconition API.
  - Auto restart on failure
  - Easy to schedule as Cron job
  - Support multi-account checkin one after another.
@@ -17,5 +17,5 @@
  - Node JS is installed.
 
 ## Todo:
-
- - Store recognized voice and train data
+ - Auto solve questions every day to double the points (API is ready: https://us-central1-p3a-dayquestion.cloudfunctions.net/g).
+ - Store recognized voice and train data.
