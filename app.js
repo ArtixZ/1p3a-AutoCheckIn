@@ -98,7 +98,7 @@ async function run(config) {
         console.log("-------------question answered------------");
         // -------Questionnaire--------
     } catch (err) {
-        console.log(err, err.stack);
+        console.trace(err);
     } finally {
         await browser.close();
     }
