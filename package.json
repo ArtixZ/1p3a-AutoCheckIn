@@ -11,5 +11,8 @@
   "dependencies": {
     "axios": "^0.24.0",
     "puppeteer-core": "^11.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.5.0"
   }
 }
