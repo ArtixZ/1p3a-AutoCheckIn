@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const path = require('path');
 const solve = require("./validate.js");
 

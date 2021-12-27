@@ -83,6 +83,9 @@ async function run(config) {
 
         // -------Questionnaire--------
         console.log("-------------go to questionnaire page------------");
+        await page.waitForSelector(
+            `a[onclick^="showWindow('pop','plugin.php?id=ahome_dayquestion:pop')"]`
+        );
         await page.click(
             `a[onclick^="showWindow('pop','plugin.php?id=ahome_dayquestion:pop')"]`
         );

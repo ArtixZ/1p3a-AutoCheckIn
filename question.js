@@ -60,7 +60,11 @@ async function question(page, token) {
             `div[onclick="document.getElementById('a${ansIdx}').checked='checked';"]`
         );
 
-        await page.click(".pnc");
+        await Promise.all([
+            page.click(".pnc"),
+            page.waitForNavigation({ waitUntil: "networkidle2" }),
+        ]);
+
         await page.waitFor(3000);
     } catch (err) {
         console.trace(err);
