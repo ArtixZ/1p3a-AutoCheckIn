@@ -65,7 +65,11 @@ async function question(page, token) {
             page.waitForNavigation({ waitUntil: "networkidle2" }),
         ]);
 
-        await page.waitFor(3000);
+        await new Promise((resolve) =>
+            setTimeout(function () {
+                resolve();
+            }, 3000)
+        );
     } catch (err) {
         console.trace(err);
         throw err;
