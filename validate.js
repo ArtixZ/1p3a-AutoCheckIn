@@ -120,7 +120,7 @@ async function solve(page, token) {
                 // await page.waitForSelector('iframe[src*="api2/bframe"]');
                 // await page.waitForSelector('.rc-audiochallenge-tdownload-link');
             } catch (e) {
-                console.error(e);
+                console.error("Recaptcha is not loaded correctly!", e);
                 await page.screenshot({
                     path: path.join(
                         __dirname,
