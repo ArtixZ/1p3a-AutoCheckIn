@@ -121,6 +121,12 @@ async function solve(page, token) {
                 // await page.waitForSelector('.rc-audiochallenge-tdownload-link');
             } catch (e) {
                 console.error(e);
+                await page.screenshot({
+                    path: path.join(
+                        __dirname,
+                        "./screenshots/recaptcha-toSolve-failed.png"
+                    ),
+                });
                 continue;
             }
 
