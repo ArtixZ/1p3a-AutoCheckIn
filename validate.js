@@ -77,6 +77,8 @@ async function solve(page, token) {
                         "./screenshots/recaptcha-NOT-blocked.png"
                     ),
                 });
+
+                console.log("NOT blocked.");
             }
 
         } catch(err) {
