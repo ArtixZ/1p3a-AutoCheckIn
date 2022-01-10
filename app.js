@@ -86,9 +86,14 @@ async function run(config) {
         await page.waitForSelector(
             `a[onclick^="showWindow('pop','plugin.php?id=ahome_dayquestion:pop')"]`
         );
-        await page.click(
-            `a[onclick^="showWindow('pop','plugin.php?id=ahome_dayquestion:pop')"]`
-        );
+        try {
+            await page.click(
+                `a[onclick^="showWindow('pop','plugin.php?id=ahome_dayquestion:pop')"]`
+            );
+        } catch (err) {
+            console.log("Already answered question!");
+        }
+        
         await page.waitForSelector(".pnc");
         await page.screenshot({
             path: path.join(

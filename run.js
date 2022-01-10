@@ -28,7 +28,7 @@ function run() {
                 console.log("Restarting...");
 
                 run();
-            }, 300000);
+            }, 1800000);
         }
     });
 }
