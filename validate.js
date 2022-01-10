@@ -54,45 +54,41 @@ async function solve(page, token) {
 
         // if ddos blocked then exit.
         let blocked = false;
+        
         try {
-            await page.waitForFunction(
-                () => {
-                    const iframe = document.querySelector(
-                        'iframe[src*="api2/bframe"]'
-                    );
-                    if (!iframe) return false;
+            const blocked = await Promise.any([
+                isBlocked(page),
+                notBlocked(page)
+            ]);
 
-                    return !!iframe.contentWindow.document.querySelector(
-                        ".rc-doscaptcha-header-text"
-                    );
-                },
-                { timeout: 40000 }
-            );
-
-            blocked = true;
-            await page.screenshot({
-                path: path.join(
-                    __dirname,
-                    "./screenshots/recaptcha-blocked.png"
-                ),
-            });
-        } catch (err) {
-            console.log("not blocked.");
-        } finally {
-            if (blocked) {
-                // recaptcha blcoked. restart after minutes.
+            if(blocked) {
+                await page.screenshot({
+                    path: path.join(
+                        __dirname,
+                        "./screenshots/recaptcha-blocked.png"
+                    ),
+                });
                 console.log("blocked.");
                 process.exit(5);
-                // throw new Error("ddnos blocked.");
             } else {
                 await page.screenshot({
                     path: path.join(
                         __dirname,
-                        "./screenshots/recaptcha-going-to-download-audio.png"
+                        "./screenshots/recaptcha-NOT-blocked.png"
                     ),
                 });
             }
+
+        } catch(err) {
+            console.error("Recaptcha is not loaded correctly!", e);
+            await page.screenshot({
+                path: path.join(
+                    __dirname,
+                    "./screenshots/recaptcha-check-block-failed.png"
+                ),
+            });
         }
+        
 
         // eslint-disable-next-line no-constant-condition
         while (true) {
@@ -222,6 +218,40 @@ async function solve(page, token) {
 
         throw e;
     }
+}
+
+async function isBlocked(page) {
+    await page.waitForFunction(
+        () => {
+            const iframe = document.querySelector(
+                'iframe[src*="api2/bframe"]'
+            );
+            if (!iframe) return false;
+
+            return !!iframe.contentWindow.document.querySelector(
+                ".rc-doscaptcha-header-text"
+            );
+        },
+        { timeout: 40000 }
+    );
+    return true;
+}
+
+async function notBlocked(page) {
+    await page.waitForFunction(
+        () => {
+            const iframe = document.querySelector(
+                'iframe[src*="api2/bframe"]'
+            );
+            if (!iframe) return false;
+
+            return !!iframe.contentWindow.document.querySelector(
+                ".rc-audiochallenge-tdownload-link"
+            );
+        },
+        { timeout: 40000 }
+    );
+    return false;
 }
 
 module.exports = solve;
