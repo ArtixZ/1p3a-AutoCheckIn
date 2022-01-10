@@ -52,9 +52,6 @@ async function solve(page, token) {
         const audioButton = await imageFrame.$("#recaptcha-audio-button");
         audioButton.click({ delay: rdn(30, 150) });
 
-        // if ddos blocked then exit.
-        let blocked = false;
-        
         try {
             const blocked = await Promise.any([
                 isBlocked(page),
@@ -69,6 +66,7 @@ async function solve(page, token) {
                     ),
                 });
                 console.log("blocked.");
+// if ddos blocked then exit.
                 process.exit(5);
             } else {
                 await page.screenshot({
