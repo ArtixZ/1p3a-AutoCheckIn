@@ -22,7 +22,7 @@ function run() {
     exec.on("close", (code) => {
         console.log(`child process exited with code ${code}`);
         if (code != 0) {
-            console.log("Going to restart after 5 minutes.");
+            console.log("Going to restart after 30 minutes.");
 
             setTimeout(() => {
                 console.log("Restarting...");
