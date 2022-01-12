@@ -6,7 +6,7 @@ const login = require("./login.js");
 const checkin = require("./checkin.js");
 const question = require("./question.js");
 
-const config = require("./config.json");
+const configs = require("./config.json");
 
 const LOGIN_URL = "https://auth.1point3acres.com/login";
 const CHECKIN_URL = "https://www.1point3acres.com/bbs/dsu_paulsign-sign.html";
@@ -115,7 +115,7 @@ async function run(config) {
 }
 
 (async () => {
-    for (let cfg of config) {
+    for (let cfg of configs) {
         await run(cfg);
     }
 })();
