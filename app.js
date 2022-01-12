@@ -90,19 +90,21 @@ async function run(config) {
             await page.click(
                 `a[onclick^="showWindow('pop','plugin.php?id=ahome_dayquestion:pop')"]`
             );
+            await page.waitForSelector("#myform");
+            await page.screenshot({
+                path: path.join(
+                    __dirname,
+                    "./screenshots/daily-question-loaded.png"
+                ),
+            });
+
+            console.log("-------------now at questionnaire page------------");
+            await question(page, token);
+            
         } catch (err) {
             console.log("Already answered question!");
         }
         
-        await page.waitForSelector(".pnc");
-        await page.screenshot({
-            path: path.join(
-                __dirname,
-                "./screenshots/daily-question-loaded.png"
-            ),
-        });
-        console.log("-------------now at questionnaire page------------");
-        await question(page, token);
         console.log("-------------question answered------------");
         // -------Questionnaire--------
     } catch (err) {
