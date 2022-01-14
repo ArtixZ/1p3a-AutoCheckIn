@@ -11,87 +11,88 @@ function rdn(min, max) {
 
 async function solve(page, token) {
     console.log("-------------solving recaptcha------------");
+    while (true) {
+        try {
+            await page.waitForFunction(
+                () => {
+                    const iframe = document.querySelector(
+                        'iframe[src*="api2/anchor"]'
+                    );
+                    if (!iframe) return false;
 
-    try {
-        await page.waitForFunction(
-            () => {
-                const iframe = document.querySelector(
-                    'iframe[src*="api2/anchor"]'
-                );
+                    return !!iframe.contentWindow.document.querySelector(
+                        "#recaptcha-anchor"
+                    );
+                },
+                { timeout: 40000 }
+            );
+
+            let frames = await page.frames();
+            const recaptchaFrame = frames.find((frame) =>
+                frame.url().includes("api2/anchor")
+            );
+
+            const checkbox = await recaptchaFrame.$("#recaptcha-anchor");
+            await checkbox.click({ delay: rdn(30, 150) });
+
+            await page.waitForFunction(() => {
+                const iframe = document.querySelector('iframe[src*="api2/bframe"]');
                 if (!iframe) return false;
 
-                return !!iframe.contentWindow.document.querySelector(
-                    "#recaptcha-anchor"
+                const img = iframe.contentWindow.document.querySelector(
+                    ".rc-image-tile-wrapper img"
                 );
-            },
-            { timeout: 40000 }
-        );
-
-        let frames = await page.frames();
-        const recaptchaFrame = frames.find((frame) =>
-            frame.url().includes("api2/anchor")
-        );
-
-        const checkbox = await recaptchaFrame.$("#recaptcha-anchor");
-        await checkbox.click({ delay: rdn(30, 150) });
-
-        await page.waitForFunction(() => {
-            const iframe = document.querySelector('iframe[src*="api2/bframe"]');
-            if (!iframe) return false;
-
-            const img = iframe.contentWindow.document.querySelector(
-                ".rc-image-tile-wrapper img"
-            );
-            return img && img.complete;
-        });
-
-        frames = await page.frames();
-        const imageFrame = frames.find((frame) =>
-            frame.url().includes("api2/bframe")
-        );
-        const audioButton = await imageFrame.$("#recaptcha-audio-button");
-        audioButton.click({ delay: rdn(30, 150) });
-
-        try {
-            const blocked = await Promise.any([
-                isBlocked(page),
-                notBlocked(page)
-            ]);
-
-            if(blocked) {
-                await page.screenshot({
-                    path: path.join(
-                        __dirname,
-                        "./screenshots/recaptcha-blocked.png"
-                    ),
-                });
-                console.log("blocked.");
-// if ddos blocked then exit.
-                process.exit(5);
-            } else {
-                await page.screenshot({
-                    path: path.join(
-                        __dirname,
-                        "./screenshots/recaptcha-NOT-blocked.png"
-                    ),
-                });
-
-                console.log("NOT blocked.");
-            }
-
-        } catch(err) {
-            console.error("Recaptcha is not loaded correctly!", e);
-            await page.screenshot({
-                path: path.join(
-                    __dirname,
-                    "./screenshots/recaptcha-check-block-failed.png"
-                ),
+                return img && img.complete;
             });
-        }
-        
 
-        // eslint-disable-next-line no-constant-condition
-        while (true) {
+            frames = await page.frames();
+            const imageFrame = frames.find((frame) =>
+                frame.url().includes("api2/bframe")
+            );
+            const audioButton = await imageFrame.$("#recaptcha-audio-button");
+            audioButton.click({ delay: rdn(30, 150) });
+
+            try {
+                const blocked = await Promise.any([
+                    isBlocked(page),
+                    notBlocked(page)
+                ]);
+
+                if(blocked) {
+                    await page.screenshot({
+                        path: path.join(
+                            __dirname,
+                            "./screenshots/recaptcha-blocked.png"
+                        ),
+                    });
+                    console.log("blocked.");
+    // if ddos blocked then exit.
+                    process.exit(5);
+                } else {
+                    await page.screenshot({
+                        path: path.join(
+                            __dirname,
+                            "./screenshots/recaptcha-NOT-blocked.png"
+                        ),
+                    });
+
+                    console.log("NOT blocked.");
+                }
+
+            } catch(err) {
+                console.error("Check block failed!", e);
+                await page.screenshot({
+                    path: path.join(
+                        __dirname,
+                        "./screenshots/recaptcha-check-block-failed.png"
+                    ),
+                });
+                
+                continue;
+            }
+            
+
+            // eslint-disable-next-line no-constant-condition
             try {
                 await page.waitForFunction(
                     () => {
@@ -123,6 +124,19 @@ async function solve(page, token) {
                         "./screenshots/recaptcha-toSolve-failed.png"
                     ),
                 });
+
+                try{
+                    await page.click(`span[onclick="updateseccode('S00')"]`);
+                    await page.screenshot({
+                        path: path.join(
+                            __dirname,
+                            "./screenshots/recaptcha-reload.png"
+                        ),
+                    });
+                } catch(err) {
+                    console.log("no need to reload recaptcha");
+                }
+
                 continue;
             }
 
@@ -205,18 +219,18 @@ async function solve(page, token) {
                 });
                 continue;
             }
+
+            // eslint-disable-next-line no-unreachable
+            console.log("-------------recaptcha solved------------");
+        } catch (e) {
+            console.error("failed on solving recaptcha.\n", e);
+
+            await page.screenshot({
+                path: path.join(__dirname, "./screenshots/recaptcha-error.png"),
+            });
+
+            throw e;
         }
-
-        // eslint-disable-next-line no-unreachable
-        console.log("-------------recaptcha solved------------");
-    } catch (e) {
-        console.error("failed on solving recaptcha.\n", e);
-
-        await page.screenshot({
-            path: path.join(__dirname, "./screenshots/recaptcha-error.png"),
-        });
-
-        throw e;
     }
 }
 

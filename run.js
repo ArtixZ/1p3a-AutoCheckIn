@@ -1,7 +1,13 @@
 const { spawn } = require("child_process");
 const path = require("path");
 
-function run() {
+function run(count) {
+
+    if(count > 4) {
+        console.log("Tried too many times and it's always being blocked.");
+        return;
+    }
+
     console.log("node path: ", process.execPath);
 
     const exec = spawn(process.execPath, [path.join(__dirname, "app.js")], {
@@ -27,10 +33,10 @@ function run() {
             setTimeout(() => {
                 console.log("Restarting...");
 
-                run();
-            }, 1800000);
+                run(count + 1);
+            }, 1800000 * count);
         }
     });
 }
 
-run();
+run(1);
