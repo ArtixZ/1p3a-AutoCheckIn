@@ -24,9 +24,9 @@ async function login(page, token, username, password) {
 
   await page.screenshot({ path: path.join(__dirname, "./screenshots/login-loggedin.png") });
 
-// write cookies into file
-  const cookies = await page.cookies();
-  await fs.writeFile(path.join(__dirname, `./.cookies/${username}`), JSON.stringify(cookies, null, 2));
+// // write cookies into file
+//   const cookies = await page.cookies();
+//   await fs.writeFile(path.join(__dirname, `./.cookies/${username}`), JSON.stringify(cookies, null, 2));
 
 }
 

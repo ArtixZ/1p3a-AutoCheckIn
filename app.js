@@ -19,6 +19,7 @@ async function run(config) {
             .readdir(path.join(__dirname, "./screenshots"))
             .then(async (files) => {
                 for (const file of files) {
+                    if(file === ".gitignore") continue;
                     await fs.unlink(
                         path.join(__dirname, "./screenshots", file)
                     );
@@ -43,22 +44,23 @@ async function run(config) {
             "--disable-setuid-sandbox",
             "--disable-web-security",
         ],
+        userDataDir: path.join(__dirname, './.userDataDir', username)
     });
     const page = await browser.newPage();
     await page.setDefaultNavigationTimeout(0);
 
     // page.on("console", (consoleObj) => console.log(consoleObj.text()));
 
-    // read cookies and set cookies to page.
-    try {
-        const cookiesString = await fs.readFile(
-            path.join(__dirname, `./.cookies/${username}`)
-        );
-        const cookies = JSON.parse(cookiesString);
-        await page.setCookie(...cookies);
-    } catch (err) {
-        console.log("can't set cookie.", err);
-    }
+    // // read cookies and set cookies to page.
+    // try {
+    //     const cookiesString = await fs.readFile(
+    //         path.join(__dirname, `./.cookies/${username}`)
+    //     );
+    //     const cookies = JSON.parse(cookiesString);
+    //     await page.setCookie(...cookies);
+    // } catch (err) {
+    //     console.log("can't set cookie.", err);
+    // }
 
     try {
         // -------LOG IN--------
